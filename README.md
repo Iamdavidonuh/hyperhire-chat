@@ -7,7 +7,9 @@ A Simple Whatsapp API Clone
 
 - clone the repo
 
-    ```https://github.com/galaxy-icts/travulas.git```
+    ```bash 
+    git clone https://github.com/Iamdavidonuh/hyperhire-chat.git
+    ```
 
 ### Installation
 
