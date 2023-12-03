@@ -13,7 +13,7 @@ RUN poetry config virtualenvs.create false
 WORKDIR /hyperhire
 
 COPY poetry.lock /hyperhire/
-COPY pypoetry.toml /hyperhire/
+COPY pyproject.toml /hyperhire/
 RUN poetry install --no-root
 
 COPY . /hyperhire/
