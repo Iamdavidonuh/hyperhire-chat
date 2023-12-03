@@ -1,8 +1,10 @@
-from django.contrib.auth.models import User
 from django.conf import settings
-from rest_framework import exceptions as rest_execeptions, status
+from django.contrib.auth.models import User
+from rest_framework import exceptions as rest_execeptions
+from rest_framework import status
+
 from chat.models import ChatRooms, Message
-from . import constants
+
 from .schemas import MessageSchema
 
 

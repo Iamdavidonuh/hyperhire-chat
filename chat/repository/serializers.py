@@ -1,10 +1,11 @@
-from rest_framework import serializers, exceptions
-from django.contrib.auth.models import User
 from channels.db import database_sync_to_async
 from channels.layers import get_channel_layer
-from chat import models
-from . import crud, schemas
+from django.contrib.auth.models import User
+from rest_framework import exceptions, serializers
 
+from chat import models
+
+from . import schemas
 
 channel_layer = get_channel_layer()
 

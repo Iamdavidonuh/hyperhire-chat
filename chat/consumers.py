@@ -1,9 +1,11 @@
 import json
+
+from channels import exceptions as channels_exceptions
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth.models import User
 from django.core import exceptions
-from channels import exceptions as channels_exceptions
+
 from chat.repository import crud
 from chat.repository.schemas import MessageSchema
 
