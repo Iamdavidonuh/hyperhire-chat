@@ -1,6 +1,8 @@
 # hyperhire-chat
 A Simple Chat Room API using django, django-channels
 
+[![Test](https://github.com/Iamdavidonuh/hyperhire-chat/actions/workflows/test.yml/badge.svg)](https://github.com/Iamdavidonuh/hyperhire-chat/actions/workflows/test.yml)
+
 
 
 ## Getting Started

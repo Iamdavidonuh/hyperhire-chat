@@ -1,4 +1,4 @@
-name: Tests
+name: Test
 
 on:
   push:
@@ -39,4 +39,6 @@ jobs:
     - name: Installing poetry dependencies
       run: poetry install
     - name: Test with manage.py test
-      run: poetry run pytest -v 
+      run: |
+        export CHANNELS_REDIS_HOST="127.0.0.1"
+        poetry run pytest -v 
