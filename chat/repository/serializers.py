@@ -35,7 +35,8 @@ class EnterChatRoomSerializer(serializers.Serializer):
 
     def update(self, instance: models.ChatRooms, validated_data):
         user = User.objects.get(pk=validated_data["user"].pk)
-        return instance.enter_room(user)
+        instance.enter_room(user)
+        return instance
 
 
 class LeaveChatRoomSerializer(serializers.Serializer):
@@ -43,16 +44,19 @@ class LeaveChatRoomSerializer(serializers.Serializer):
 
     def update(self, instance: models.ChatRooms, validated_data):
         user = User.objects.get(pk=validated_data["user"].pk)
-        return instance.leave_room(user)
+        instance.leave_room(user)
+        return instance
 
 
 class CreateMessageSerializer(serializers.ModelSerializer):
+    sender = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     class Meta:
         model = models.Message
         fields = "__all__"
 
     def validate(self, attrs):
-        if attrs["user"] not in attrs["rooms"].members:
+        if attrs["sender"] not in attrs["room"].members.all():
             raise exceptions.ValidationError(
                 "Cannot send a message to a group you do not belong in"
             )
@@ -62,12 +66,13 @@ class CreateMessageSerializer(serializers.ModelSerializer):
         instance: models.Message = super().create(validated_data)
         # send message via socket
         message = schemas.MessageSchema(
+            room=instance.room.pk,
             text=instance.text,
             sender=instance.sender.username,
-            media=instance.media.url,
             message_type=instance.message_type,
         )
-        database_sync_to_async(channel_layer.group_send)(
+        message.media = instance.media.url if instance.is_media else None
+        channel_layer.group_send(
             instance.room.room_name,
             {"type": "chat.message", "message": message.to_dict()},
         )

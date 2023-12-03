@@ -14,7 +14,7 @@ class ChatRooms(models.Model):
         return f"ChatRooms: {self.room_name}"
 
     def enter_room(self, user):
-        if user in self.members.all():
+        if user not in self.members.all():
             self.members.add(user)
         return self
 
@@ -40,6 +40,14 @@ class Message(models.Model):
     text = models.TextField(null=True, blank=True)
     media = models.FileField(upload_to="contents", blank=True, null=True)
     time_created = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def is_text(self):
+        return self.message_type == Message.MessageType.TEXT
+
+    @property
+    def is_media(self):
+        return self.message_type == Message.MessageType.MEDIA
 
     class Meta:
         ordering = ["-time_created"]
