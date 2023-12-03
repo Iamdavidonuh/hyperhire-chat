@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 class ChatRooms(models.Model):
-    room_name = models.CharField(max_length=35)
+    room_name = models.CharField(max_length=35, unique=True)
     members = models.ManyToManyField(User, related_name="conversations", blank=True)
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -39,7 +39,7 @@ class Message(models.Model):
     room = models.ForeignKey(ChatRooms, on_delete=models.CASCADE)
     text = models.TextField(null=True, blank=True)
     media = models.FileField(upload_to="contents", blank=True, null=True)
-    time_created = models.DateTimeField(auto_now=True)
+    time_created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ["-time_created"]
