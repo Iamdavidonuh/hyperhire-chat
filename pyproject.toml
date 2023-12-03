@@ -12,6 +12,7 @@ djangorestframework = "^3.14.0"
 django-filter = "^23.4"
 drf-yasg = "^1.21.7"
 channels = {extras = ["daphne"], version = "^4.0.0"}
+channels-redis = "^4.1.0"
 
 
 [tool.poetry.group.dev.dependencies]
