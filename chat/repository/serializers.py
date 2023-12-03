@@ -20,7 +20,7 @@ class CreateChatRoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.ChatRooms
-        fields = ["creator", "room_name"]
+        fields = ["creator", "room_name", "current_user"]
 
     def validate(self, attrs):
         if attrs["current_user"].pk != attrs["creator"].pk:
