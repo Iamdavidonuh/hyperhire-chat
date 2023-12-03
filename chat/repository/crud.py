@@ -26,9 +26,15 @@ def leave_chat_room(user: User, room_name: str) -> ChatRooms:
 def create_chatroom_message(message_schema: MessageSchema):
     sender = User.objects.get(username=message_schema.sender)
     room = ChatRooms.objects.get(room_name=message_schema.room)
-    if sender not in room.members:
+    if sender not in room.members.all():
         return None
-    message = Message(**message_schema, sender=sender, room=room)
+    message = Message(
+        sender=sender,
+        room=room,
+        text=message_schema.text,
+        media=message_schema.media,
+        message_type=message_schema.message_type,
+    )
     message.save()
     return message
 

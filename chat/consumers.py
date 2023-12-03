@@ -12,7 +12,9 @@ from chat.repository.schemas import MessageSchema
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.user: User = self.get_user(user=self.scope["user"])
+        self.user: User = await database_sync_to_async(self.get_user)(
+            user=self.scope["user"]
+        )
         room_name = self.scope["url_route"]["kwargs"]["room_name"]
 
         if not database_sync_to_async(crud.find_change_room_by_name)(room_name):
@@ -33,9 +35,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message_dict: dict = text_data_json["message"]
         message_schema = MessageSchema(
-            **message_dict, sender=self.user.username
-        ).to_dict()
-        success = database_sync_to_async(crud.create_chatroom_message)(
+            **message_dict, sender=self.user.username, room=self.room_name
+        )
+        success = await database_sync_to_async(crud.create_chatroom_message)(
             message_schema=message_schema
         )
         if not success:
@@ -44,7 +46,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             )
         # Send message to room group
         await self.channel_layer.group_send(
-            self.room_group_name, {"type": "chat.message", "message": message_schema}
+            self.room_group_name,
+            {"type": "chat.message", "message": message_schema.to_dict()},
         )
 
     # Receive message from room group
@@ -53,7 +56,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # Send message to WebSocket
         await self.send(text_data=json.dumps({"message": message}))
 
-    @database_sync_to_async
+    @staticmethod
     def get_user(user: User):
         try:
             return User.objects.get(pk=user.pk)
