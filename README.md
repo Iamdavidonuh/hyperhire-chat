@@ -25,6 +25,11 @@ A Simple Chat Room API using django, django-channels
         ``` poetry install ```
 
     #### Run migrations before starting the server
+    - Set ENV for redis host:
+        ```bash 
+            export CHANNELS_REDIS_HOST="<YOUR REDIS HOST>"    
+        ```
+
 
     ```bash
     python manage.py migrate && python manage.py runserver
