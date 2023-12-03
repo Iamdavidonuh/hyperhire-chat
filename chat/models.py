@@ -14,12 +14,12 @@ class ChatRooms(models.Model):
         return f"ChatRooms: {self.room_name}"
 
     def enter_room(self, user):
-        if user in self.members:
+        if user in self.members.all():
             self.members.add(user)
         return self
 
     def leave_room(self, user):
-        if user in self.members:
+        if user in self.members.all():
             self.members.remove(user)
         return self
 

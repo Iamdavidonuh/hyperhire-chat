@@ -17,51 +17,32 @@ class ListCreateChatRoomSerializer(serializers.ModelSerializer):
 
 
 class CreateChatRoomSerializer(serializers.ModelSerializer):
-    current_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    creator = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = models.ChatRooms
-        fields = ["creator", "room_name", "current_user"]
+        fields = ["creator", "room_name"]
 
-    def validate(self, attrs):
-        if attrs["current_user"].pk != attrs["creator"].pk:
-            raise exceptions.ValidationError(
-                "The chat room's creator must be the logged in user"
-            )
-        return super().validate(attrs)
+    def save(self, **kwargs):
+        instance: models.ChatRooms = super().save(**kwargs)
+        creator = User.objects.get(pk=instance.creator.pk)
+        instance.members.add(creator)
+        return instance
 
 
 class EnterChatRoomSerializer(serializers.Serializer):
-    hidden_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    user_pk = serializers.IntegerField(min_value=1)
-
-    def validate(self, attrs):
-        user = User.objects.filter(pk=attrs["user_pk"]).first()
-        if not user:
-            raise exceptions.ValidationError("No User Found")
-        if user.pk != attrs["hidden_user"].pk:
-            raise exceptions.ValidationError("User id not thesame with logged in user")
-        return super().validate(attrs)
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     def update(self, instance: models.ChatRooms, validated_data):
-        user = User.objects.get(pk=validated_data["user_pk"])
+        user = User.objects.get(pk=validated_data["user"].pk)
         return instance.enter_room(user)
 
 
 class LeaveChatRoomSerializer(serializers.Serializer):
-    hidden_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    user_pk = serializers.IntegerField(min_value=1)
-
-    def validate(self, attrs):
-        user = User.objects.filter(pk=attrs["user_pk"]).first()
-        if not user:
-            raise exceptions.ValidationError("No User Found")
-        if user.pk != attrs["hidden_user"].pk:
-            raise exceptions.ValidationError("User id not thesame with logged in user")
-        return super().validate(attrs)
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     def update(self, instance: models.ChatRooms, validated_data):
-        user = User.objects.get(pk=validated_data["user_pk"])
+        user = User.objects.get(pk=validated_data["user"].pk)
         return instance.leave_room(user)
 
 
