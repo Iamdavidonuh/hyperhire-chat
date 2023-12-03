@@ -39,4 +39,4 @@ jobs:
     - name: Installing poetry dependencies
       run: poetry install
     - name: Test with manage.py test
-      run: pytest
+      run: poetry run pytest -v 
