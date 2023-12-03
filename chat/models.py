@@ -36,7 +36,7 @@ class Message(models.Model):
     )
 
     sender = models.ForeignKey(User, on_delete=models.CASCADE)
-    room_id = models.ForeignKey(ChatRooms, on_delete=models.CASCADE)
+    room = models.ForeignKey(ChatRooms, on_delete=models.CASCADE)
     text = models.TextField(null=True, blank=True)
     media = models.FileField(upload_to="contents", blank=True, null=True)
     time_created = models.DateTimeField(auto_now=True)

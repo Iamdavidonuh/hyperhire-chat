@@ -70,7 +70,7 @@ class Migration(migrations.Migration):
                 ),
                 ("time_created", models.DateTimeField(auto_now=True)),
                 (
-                    "room_id",
+                    "room",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE, to="chat.chatrooms"
                     ),
