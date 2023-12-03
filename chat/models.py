@@ -10,6 +10,19 @@ class ChatRooms(models.Model):
     members = models.ManyToManyField(User, related_name="conversations", blank=True)
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def __str__(self) -> str:
+        return f"ChatRooms: {self.room_name}"
+
+    def enter_room(self, user):
+        if user in self.members:
+            self.members.add(user)
+        return self
+
+    def leave_room(self, user):
+        if user in self.members:
+            self.members.remove(user)
+        return self
+
 
 class Message(models.Model):
     class MessageType(models.TextChoices):
