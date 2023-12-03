@@ -50,7 +50,7 @@ A Simple Chat Room API using django, django-channels
 Users can authenticate by sending a `base64 encoded` containing your `username` and `password` encoded the format `username:password`
     ```bash
     import base64
-    base64.b64encode(b"username:password")
+    base64.b64encode(b"username:password").decode("utf-8")
 
     ```
     Add `Authorization: Basic <ENCODED_STRING>` to request headers
