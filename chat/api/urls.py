@@ -11,6 +11,9 @@ router.register("chat-rooms/enter", viewsets.EnterChatRoom, "enter_chat_room")
 router.register("chat-rooms/leave", viewsets.LeaveChatRoom, "leave_chat_room")
 
 
+router.register("list-messages", viewsets.ListMessages, "list_messages")
+
+
 urlpatterns = [
     path("", include(router.urls)),
     path("auth/", include("django.contrib.auth.urls")),

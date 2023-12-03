@@ -76,3 +76,9 @@ class CreateMessageSerializer(serializers.ModelSerializer):
             {"type": "chat.message", "message": message.to_dict()},
         )
         return instance
+
+
+class ListMessagesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Message
+        fields = "__all__"

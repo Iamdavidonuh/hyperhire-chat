@@ -1,6 +1,8 @@
 from django.conf import settings
 from rest_framework import exceptions as djr_exceptions
 from rest_framework import generics, mixins, response, views, viewsets
+from django_filters.rest_framework import DjangoFilterBackend
+
 
 from chat import models as chat_models
 from chat.repository import serializers
@@ -37,6 +39,20 @@ class LeaveChatRoom(viewsets.GenericViewSet, mixins.UpdateModelMixin):
 class SendMessage(generics.CreateAPIView):
     queryset = chat_models.Message.objects.all()
     serializer_class = serializers.CreateMessageSerializer
+
+
+class ListMessages(
+    viewsets.GenericViewSet, mixins.ListModelMixin, mixins.RetrieveModelMixin
+):
+    """
+    Room is the room Pk and Sender is the Sender PK
+    """
+
+    queryset = chat_models.Message.objects.all()
+    serializer_class = serializers.ListMessagesSerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["room", "sender"]
 
 
 class GetchatURL(views.APIView):
