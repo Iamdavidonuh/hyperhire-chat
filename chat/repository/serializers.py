@@ -16,9 +16,18 @@ class ListCreateChatRoomSerializer(serializers.ModelSerializer):
 
 
 class CreateChatRoomSerializer(serializers.ModelSerializer):
+    current_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     class Meta:
         model = models.ChatRooms
         fields = ["creator", "room_name"]
+
+    def validate(self, attrs):
+        if attrs["current_user"].pk != attrs["creator"].pk:
+            raise exceptions.ValidationError(
+                "The chat room's creator must be the logged in user"
+            )
+        return super().validate(attrs)
 
 
 class EnterChatRoomSerializer(serializers.Serializer):
