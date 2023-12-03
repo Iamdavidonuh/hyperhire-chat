@@ -152,3 +152,6 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticatedOrReadOnly"
     ],
 }
+
+
+LOGIN_REDIRECT_URL = "/chat"
