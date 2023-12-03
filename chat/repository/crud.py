@@ -5,7 +5,7 @@ from chat.models import ChatRooms, Message
 from . import constants
 
 
-def add_users_to_chatroom(user: User, room_name: str) -> ChatRooms:
+def enter_chat_room(user: User, room_name: str) -> ChatRooms:
     chat_room = ChatRooms.objects.get(room_name=room_name)
     if len(chat_room.members.all()) == settings.MAX_MEMBERS_IN_ROOMS:
         raise rest_execeptions.APIException(
