@@ -1,6 +1,6 @@
 from rest_framework import serializers, exceptions
 from django.contrib.auth.models import User
-from asgiref.sync import async_to_sync
+from channels.db import database_sync_to_async
 from channels.layers import get_channel_layer
 from chat import models
 from . import crud, schemas
@@ -85,7 +85,7 @@ class CreateMessageSerializer(serializers.ModelSerializer):
             media=instance.media.url,
             message_type=instance.message_type,
         )
-        async_to_sync(channel_layer.group_send)(
+        database_sync_to_async(channel_layer.group_send)(
             instance.room.room_name,
             {"type": "chat.message", "message": message.to_dict()},
         )

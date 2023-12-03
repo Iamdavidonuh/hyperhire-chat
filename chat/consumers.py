@@ -13,7 +13,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.user: User = self.get_user(user=self.scope["user"])
         room_name = self.scope["url_route"]["kwargs"]["room_name"]
 
-        if not crud.find_change_room_by_name(room_name):
+        if not database_sync_to_async(crud.find_change_room_by_name)(room_name):
             raise channels_exceptions.DenyConnection("Room not Found")
 
         self.room_name = room_name
@@ -33,7 +33,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message_schema = MessageSchema(
             **message_dict, sender=self.user.username
         ).to_dict()
-        success = crud.create_chatroom_message(message_schema=message_schema)
+        success = database_sync_to_async(crud.create_chatroom_message)(
+            message_schema=message_schema
+        )
         if not success:
             raise exceptions.PermissionDenied(
                 "You do not have permissions to send message to chatroom"
